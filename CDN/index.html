@@ -19,70 +19,24 @@
    <style>
 /* Popup container "Entrando pelo celular?" */
 @media (min-width: 768px) {
-.popup {
-  display: none!important;  
+.popup {display: none!important;}
+#join_meeting_zoom {display: none!important;}
 }
-}
+     
+@media (max-width: 768px) {
+.popup {}
+.form-control {display: none!important;}
+#join_meeting {display: none!important;}
+}     
+     
+     
      .popup {
-       padding-top: 30px;
-       color: red;
-     }
-     .popup {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-/* The actual popup */
-.popup .popuptext {
-  visibility: hidden;
-  width: 160px;
-  background-color: #555;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 8px 0;
-  position: absolute;
-  z-index: 1;
-  bottom: 125%;
-  left: 50%;
-  margin-left: -80px;
-  margin-bottom: -30px;
-}
-
-/* Popup arrow */
-.popup .popuptext::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: #555 transparent transparent transparent;
-}
-
-/* Toggle this class - hide and show the popup */
-.popup .show {
-  visibility: visible;
-  -webkit-animation: fadeIn 1s;
-  animation: fadeIn 1s;
-}
-
-/* Add animation (fade in the popup) */
-@-webkit-keyframes fadeIn {
-  from {opacity: 0;} 
-  to {opacity: 1;}
-}
-
-@keyframes fadeIn {
-  from {opacity: 0;}
-  to {opacity:1 ;}
-}
+       padding-top: 15px;
+       color: white;
+       width: 200px;
+       text-align: center;
+       font-size: 10px; 
+     }	   
 /*FIM*/
 	   
 	   
@@ -249,14 +203,14 @@ border-radius: 10px;
                     <input type="hidden" value="" id="copy_link_value" />
                   
                     <button type="submit" class="btn btn-primary" id="join_meeting">Entrar na aula</button>
+
+<a href="https://us02web.zoom.us/j/9218409306?pwd=bGl1NStRdFlaQ2JQcVhqQkhETWRZZz09&name=QW5kcsOp#success">  <button type="submit" class="btn btn-primary" id="join_meeting_zoom">Entrar na aula (zoom)</button> </a> 
                      
                     <button type="submit" class="btn btn-primary" id="clear_all">Clear</button>
                     <button type="button" link="" onclick="window.copyJoinLink('#copy_join_link')"
                         class="btn btn-primary" id="copy_join_link">Copy Direct join link</button>
                   
-                     <div class="popup" onclick="myFunction()">Entrando pelo celular?
-  <span class="popuptext" id="myPopup"> Clique no link abaixo para abrir a aula no app do zoom: <a href="https://us02web.zoom.us/j/83673144987?pwd=VVRuZHF6b3FLQ25DWnlyeGxGUEdnUT09">Ir para ZOOM</a></span>
-</div>
+                     <div class="popup">Ao clicar no botão acima. Você será redirecionado para o Zoom no seu celular.</div>
 
                 </form>
              
