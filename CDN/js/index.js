@@ -30,9 +30,9 @@ function websdkready() {
 document.getElementById("display_name").value =
     "";
 
-  document.getElementById("meeting_number").value = "83673144987"
+  document.getElementById("meeting_number").value = "87370145813"
   ;
-  document.getElementById("meeting_pwd").value = "312601"
+  document.getElementById("meeting_pwd").value = "428930"
   ;
 
   if (testTool.getCookie("meeting_lang"))
