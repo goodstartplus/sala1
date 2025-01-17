@@ -5,10 +5,12 @@
     width: 100%;
     position: relative;
     z-index: 999;
+    background-color: #000;
   }
   body {
     margin: 0;
     padding: 0;
+    overflow: hidden;
   }
 </style>
 
@@ -17,32 +19,38 @@
 <div id="zmmtg-root"></div>
 
 <!-- Scripts do Zoom SDK (ORDENADOS CORRETAMENTE) -->
-<script src="https://source.zoom.us/2.14.0/lib/vendor/react.min.js"></script>
-<script src="https://source.zoom.us/2.14.0/lib/vendor/react-dom.min.js"></script>
-<script src="https://source.zoom.us/2.14.0/lib/vendor/redux.min.js"></script>
-<script src="https://source.zoom.us/2.14.0/lib/vendor/redux-thunk.min.js"></script>
+<script src="https://source.zoom.us/2.14.0/lib/vendor/react.min.js" defer></script>
+<script src="https://source.zoom.us/2.14.0/lib/vendor/react-dom.min.js" defer></script>
+<script src="https://source.zoom.us/2.14.0/lib/vendor/redux.min.js" defer></script>
+<script src="https://source.zoom.us/2.14.0/lib/vendor/redux-thunk.min.js" defer></script>
 
 <!-- SDK do Zoom -->
-<script src="https://source.zoom.us/zoom-meeting-2.14.0.min.js"></script>
+<script src="https://source.zoom.us/2.14.0/zoom-meeting-2.14.0.min.js" defer></script>
 
 <!-- Biblioteca para gerar a assinatura -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.18/jsrsasign-all-min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.18/jsrsasign-all-min.js" defer></script>
 
-<script>
+<script defer>
   // 🔐 Credenciais do Zoom
-  const apiKey = 'USroBek9TFK0sdTnKGQcg';      // API Key (Client ID)
-  const apiSecret = 'xfjGAB6qOuMVQCABv8obRavSaNrd1X8d';  // API Secret
-  const meetingNumber = '87370145813';         // ID da Reunião
-  const passWord = '0fGYcM';                   // Senha da Reunião
+  const apiKey = 'USroBek9TFK0sdTnKGQcg';
+  const apiSecret = 'xfjGAB6qOuMVQCABv8obRavSaNrd1X8d';
+  const meetingNumber = '87370145813';
+  const passWord = '0fGYcM';
 
   // 📧 Dados do aluno (do Memberkit)
-  const userName = 'Nome do Aluno';           // Nome real do aluno
-  const userEmail = 'email@dominio.com';      // Email real do aluno
+  const userName = 'Nome do Aluno';
+  const userEmail = 'email@dominio.com';
 
   // ⚙️ Inicializar o SDK com caminho correto
-  ZoomMtg.setZoomJSLib('https://source.zoom.us/2.14.0/lib', '/av');
-  ZoomMtg.preLoadWasm();
-  ZoomMtg.prepareJssdk();
+  document.addEventListener('DOMContentLoaded', function () {
+    if (typeof ZoomMtg !== 'undefined') {
+      ZoomMtg.setZoomJSLib('https://source.zoom.us/2.14.0/lib', '/av');
+      ZoomMtg.preLoadWasm();
+      ZoomMtg.prepareJssdk();
+    } else {
+      console.error('❌ ZoomMtg não carregou corretamente!');
+    }
+  });
 
   // 🔑 Função para gerar a assinatura
   function generateSignature(apiKey, apiSecret, meetingNumber, role) {
@@ -96,6 +104,6 @@
 
   // 🖱️ Evento do botão
   document.getElementById('joinMeeting').addEventListener('click', function () {
-    generateSignature(apiKey, apiSecret, meetingNumber, 0);  // 0 = Participante
+    generateSignature(apiKey, apiSecret, meetingNumber, 0);
   });
 </script>
