@@ -1,13 +1,3 @@
-<!-- Zoom Meeting SDK -->
-<script src="https://source.zoom.us/2.14.0/lib/vendor/react.min.js"></script>
-<script src="https://source.zoom.us/2.14.0/lib/vendor/react-dom.min.js"></script>
-<script src="https://source.zoom.us/2.14.0/lib/vendor/redux.min.js"></script>
-<script src="https://source.zoom.us/2.14.0/lib/vendor/redux-thunk.min.js"></script>
-<script src="https://source.zoom.us/2.14.0/zoom-meeting-2.14.0.min.js"></script>
-
-<!-- Biblioteca para gerar a assinatura -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.18/jsrsasign-all-min.js"></script>
-
 <!-- Estilo necessário para o Zoom SDK -->
 <style>
   #zmmtg-root {
@@ -26,6 +16,18 @@
 <button id="joinMeeting">Entrar na Reunião</button>
 <div id="zmmtg-root"></div>
 
+<!-- Scripts do Zoom SDK (ORDENADOS CORRETAMENTE) -->
+<script src="https://source.zoom.us/2.14.0/lib/vendor/react.min.js"></script>
+<script src="https://source.zoom.us/2.14.0/lib/vendor/react-dom.min.js"></script>
+<script src="https://source.zoom.us/2.14.0/lib/vendor/redux.min.js"></script>
+<script src="https://source.zoom.us/2.14.0/lib/vendor/redux-thunk.min.js"></script>
+
+<!-- SDK do Zoom -->
+<script src="https://source.zoom.us/zoom-meeting-2.14.0.min.js"></script>
+
+<!-- Biblioteca para gerar a assinatura -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.18/jsrsasign-all-min.js"></script>
+
 <script>
   // 🔐 Credenciais do Zoom
   const apiKey = 'USroBek9TFK0sdTnKGQcg';      // API Key (Client ID)
@@ -37,8 +39,8 @@
   const userName = 'Nome do Aluno';           // Nome real do aluno
   const userEmail = 'email@dominio.com';      // Email real do aluno
 
-  // ⚙️ Inicializar o SDK
-  ZoomMtg.setZoomJSLib('https://source.zoom.us/2.14.0/lib', '/av');  // Configura o caminho correto
+  // ⚙️ Inicializar o SDK com caminho correto
+  ZoomMtg.setZoomJSLib('https://source.zoom.us/2.14.0/lib', '/av');
   ZoomMtg.preLoadWasm();
   ZoomMtg.prepareJssdk();
 
