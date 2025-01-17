@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quarta do Vocabulário - Ao Vivo</title>
+  <title>Entrar na Reunião</title>
 
-  <!-- Zoom SDK CSS -->
   <link rel="stylesheet" href="https://source.zoom.us/3.11.0/css/bootstrap.css" />
   <link rel="stylesheet" href="https://source.zoom.us/3.11.0/css/react-select.css" />
 </head>
@@ -19,83 +18,6 @@
 
   <div id="zmmtg-root"></div>
 
-  <!-- Zoom SDK Scripts -->
-  <script src="https://source.zoom.us/3.11.0/lib/vendor/react.min.js"></script>
-  <script src="https://source.zoom.us/3.11.0/lib/vendor/react-dom.min.js"></script>
-  <script src="https://source.zoom.us/3.11.0/lib/vendor/redux.min.js"></script>
-  <script src="https://source.zoom.us/3.11.0/lib/vendor/redux-thunk.min.js"></script>
-  <script src="https://source.zoom.us/3.11.0/zoom-meeting-3.11.0.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.18/jsrsasign-all-min.js"></script>
-
-  <script>
-    // ⚠️ For Testing Only - Zoom Credentials
-    const apiKey = 'USroBek9TFK0sdTnKGQcg';
-    const apiSecret = 'xfjGAB6qOuMVQCABv8obRavSaNrd1X8d';
-    const meetingNumber = '87370145813';
-    const passWord = '0fGYcM';
-
-    // Initialize Zoom SDK
-    ZoomMtg.setZoomJSLib('https://source.zoom.us/3.11.0/lib', '/av');
-    ZoomMtg.preLoadWasm();
-    ZoomMtg.prepareJssdk();
-
-    // Signature Generator (Client-side for Testing)
-    function generateSignature(apiKey, apiSecret, meetingNumber, role) {
-      const iat = Math.round(new Date().getTime() / 1000) - 30;
-      const exp = iat + 60 * 60 * 2;
-
-      const oHeader = { alg: 'HS256', typ: 'JWT' };
-      const oPayload = {
-        sdkKey: apiKey,
-        mn: meetingNumber,
-        role: role,
-        iat: iat,
-        exp: exp,
-        appKey: apiKey,
-        tokenExp: exp
-      };
-
-      const sHeader = JSON.stringify(oHeader);
-      const sPayload = JSON.stringify(oPayload);
-      return KJUR.jws.JWS.sign('HS256', sHeader, sPayload, apiSecret);
-    }
-
-    // Start Zoom Meeting
-    function startMeeting(signature, userName) {
-      ZoomMtg.init({
-        leaveUrl: 'https://goodstart.com.br',
-        success: function () {
-          ZoomMtg.join({
-            signature: signature,
-            meetingNumber: meetingNumber,
-            userName: userName,
-            apiKey: apiKey,
-            passWord: passWord,
-            success: function () {
-              console.log('✅ Entrou na reunião com sucesso!');
-            },
-            error: function (err) {
-              console.error('❌ Erro ao entrar na reunião:', err);
-            }
-          });
-        },
-        error: function (err) {
-          console.error('❌ Erro ao inicializar:', err);
-        }
-      });
-    }
-
-    // Button Click to Join
-    document.getElementById('joinMeeting').addEventListener('click', function () {
-      const userName = document.getElementById('display_name').value.trim();
-      if (!userName) {
-        alert('⚠️ Digite seu nome!');
-        return;
-      }
-
-      const signature = generateSignature(apiKey, apiSecret, meetingNumber, 0);  // 0 = Participant
-      startMeeting(signature, userName);
-    });
-  </script>
+  <script src="js/index.js"></script>
 </body>
 </html>
