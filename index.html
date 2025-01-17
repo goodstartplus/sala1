@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Entrar na Reunião</title>
 
-  <!-- Estilo necessário para o Zoom SDK -->
+  <!-- Zoom SDK Styles -->
   <link rel="stylesheet" href="https://source.zoom.us/3.11.0/css/bootstrap.css" />
   <link rel="stylesheet" href="https://source.zoom.us/3.11.0/css/react-select.css" />
 
@@ -39,7 +39,7 @@
 
 <div id="zmmtg-root"></div>
 
-<!-- Scripts do Zoom SDK -->
+<!-- Zoom SDK Scripts -->
 <script src="https://source.zoom.us/3.11.0/lib/vendor/react.min.js"></script>
 <script src="https://source.zoom.us/3.11.0/lib/vendor/react-dom.min.js"></script>
 <script src="https://source.zoom.us/3.11.0/lib/vendor/redux.min.js"></script>
@@ -48,24 +48,20 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.18/jsrsasign-all-min.js"></script>
 
 <script>
-  // 🔐 Credenciais do Zoom
+  // ⚠️ TESTING ONLY - Zoom Credentials
   const apiKey = 'USroBek9TFK0sdTnKGQcg';
   const apiSecret = 'xfjGAB6qOuMVQCABv8obRavSaNrd1X8d';
   const meetingNumber = '87370145813';
   const passWord = '0fGYcM';
 
-  // ⚙️ Inicializar o SDK
+  // ⚙️ Initialize SDK
   document.addEventListener('DOMContentLoaded', function () {
-    if (typeof ZoomMtg !== 'undefined') {
-      ZoomMtg.setZoomJSLib('https://source.zoom.us/3.11.0/lib', '/av');
-      ZoomMtg.preLoadWasm();
-      ZoomMtg.prepareJssdk();
-    } else {
-      console.error('❌ ZoomMtg não carregou corretamente!');
-    }
+    ZoomMtg.setZoomJSLib('https://source.zoom.us/3.11.0/lib', '/av');
+    ZoomMtg.preLoadWasm();
+    ZoomMtg.prepareJssdk();
   });
 
-  // 🔑 Gerar assinatura
+  // 🔑 Generate Signature (CLIENT-SIDE for TESTING ONLY)
   function generateSignature(apiKey, apiSecret, meetingNumber, role) {
     const iat = Math.round(new Date().getTime() / 1000) - 30;
     const exp = iat + 60 * 60 * 2;
@@ -86,11 +82,10 @@
     return KJUR.jws.JWS.sign('HS256', sHeader, sPayload, apiSecret);
   }
 
-  // 🚪 Iniciar a reunião
+  // 🚪 Start Meeting
   function startMeeting(signature, userName) {
     ZoomMtg.init({
       leaveUrl: 'https://goodstart.com.br',
-      isSupportAV: true,
       success: function () {
         ZoomMtg.join({
           signature: signature,
@@ -112,7 +107,7 @@
     });
   }
 
-  // 🖱️ Evento do botão
+  // 🖱️ Button Event
   document.getElementById('joinMeeting').addEventListener('click', function () {
     const userName = document.getElementById('display_name').value.trim();
     if (!userName) {
@@ -120,7 +115,7 @@
       return;
     }
 
-    const signature = generateSignature(apiKey, apiSecret, meetingNumber, 0);  // 0 = Participante
+    const signature = generateSignature(apiKey, apiSecret, meetingNumber, 0);  // 0 = Participant
     startMeeting(signature, userName);
   });
 </script>
