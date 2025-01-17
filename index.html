@@ -1,36 +1,50 @@
-<!-- Estilo necessário para o Zoom SDK -->
-<link type="text/css" rel="stylesheet" href="https://source.zoom.us/3.11.0/css/bootstrap.css" />
-<link type="text/css" rel="stylesheet" href="https://source.zoom.us/3.11.0/css/react-select.css" />
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrar na Reunião</title>
 
-<style>
-  #zmmtg-root {
-    height: 100vh;
-    width: 100%;
-    position: relative;
-    z-index: 999;
-    background-color: #000;
-  }
-  body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-  }
-</style>
+  <!-- Estilo necessário para o Zoom SDK -->
+  <link rel="stylesheet" href="https://source.zoom.us/3.11.0/css/bootstrap.css" />
+  <link rel="stylesheet" href="https://source.zoom.us/3.11.0/css/react-select.css" />
 
-<!-- Botão para entrar na reunião -->
-<button id="joinMeeting">Entrar na Reunião</button>
+  <style>
+    #zmmtg-root {
+      height: 100vh;
+      width: 100%;
+      position: relative;
+      z-index: 999;
+      background-color: #000;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .container {
+      text-align: center;
+      padding-top: 50px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Entrar na Reunião</h2>
+  <input type="text" id="display_name" placeholder="Seu Nome" required>
+  <button id="joinMeeting">Entrar na Reunião</button>
+</div>
+
 <div id="zmmtg-root"></div>
 
-<!-- Scripts do Zoom SDK (VERSÃO 3.11.0) -->
+<!-- Scripts do Zoom SDK -->
 <script src="https://source.zoom.us/3.11.0/lib/vendor/react.min.js"></script>
 <script src="https://source.zoom.us/3.11.0/lib/vendor/react-dom.min.js"></script>
 <script src="https://source.zoom.us/3.11.0/lib/vendor/redux.min.js"></script>
 <script src="https://source.zoom.us/3.11.0/lib/vendor/redux-thunk.min.js"></script>
-
-<!-- SDK do Zoom -->
 <script src="https://source.zoom.us/3.11.0/zoom-meeting-3.11.0.min.js"></script>
-
-<!-- Biblioteca para gerar a assinatura -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.18/jsrsasign-all-min.js"></script>
 
 <script>
@@ -40,11 +54,7 @@
   const meetingNumber = '87370145813';
   const passWord = '0fGYcM';
 
-  // 📧 Dados de TESTE do aluno
-  const userName = 'Aluno Teste';
-  const userEmail = 'aluno.teste@goodstart.com.br';
-
-  // ⚙️ Inicializar o SDK com caminho correto
+  // ⚙️ Inicializar o SDK
   document.addEventListener('DOMContentLoaded', function () {
     if (typeof ZoomMtg !== 'undefined') {
       ZoomMtg.setZoomJSLib('https://source.zoom.us/3.11.0/lib', '/av');
@@ -55,7 +65,7 @@
     }
   });
 
-  // 🔑 Função para gerar a assinatura
+  // 🔑 Gerar assinatura
   function generateSignature(apiKey, apiSecret, meetingNumber, role) {
     const iat = Math.round(new Date().getTime() / 1000) - 30;
     const exp = iat + 60 * 60 * 2;
@@ -73,13 +83,11 @@
 
     const sHeader = JSON.stringify(oHeader);
     const sPayload = JSON.stringify(oPayload);
-    const signature = KJUR.jws.JWS.sign('HS256', sHeader, sPayload, apiSecret);
-
-    startMeeting(signature);
+    return KJUR.jws.JWS.sign('HS256', sHeader, sPayload, apiSecret);
   }
 
-  // 🚪 Função para iniciar a reunião
-  function startMeeting(signature) {
+  // 🚪 Iniciar a reunião
+  function startMeeting(signature, userName) {
     ZoomMtg.init({
       leaveUrl: 'https://goodstart.com.br',
       isSupportAV: true,
@@ -87,9 +95,8 @@
         ZoomMtg.join({
           signature: signature,
           meetingNumber: meetingNumber,
-          userName: userName,    // Nome fixo de TESTE
+          userName: userName,
           apiKey: apiKey,
-          userEmail: userEmail,  // Email fixo de TESTE
           passWord: passWord,
           success: function () {
             console.log('✅ Reunião iniciada com sucesso!');
@@ -107,6 +114,16 @@
 
   // 🖱️ Evento do botão
   document.getElementById('joinMeeting').addEventListener('click', function () {
-    generateSignature(apiKey, apiSecret, meetingNumber, 0);
+    const userName = document.getElementById('display_name').value.trim();
+    if (!userName) {
+      alert('Por favor, digite seu nome.');
+      return;
+    }
+
+    const signature = generateSignature(apiKey, apiSecret, meetingNumber, 0);  // 0 = Participante
+    startMeeting(signature, userName);
   });
 </script>
+
+</body>
+</html>
