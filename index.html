@@ -1,4 +1,7 @@
 <!-- Estilo necessário para o Zoom SDK -->
+<link type="text/css" rel="stylesheet" href="https://source.zoom.us/3.11.0/css/bootstrap.css" />
+<link type="text/css" rel="stylesheet" href="https://source.zoom.us/3.11.0/css/react-select.css" />
+
 <style>
   #zmmtg-root {
     height: 100vh;
@@ -18,7 +21,7 @@
 <button id="joinMeeting">Entrar na Reunião</button>
 <div id="zmmtg-root"></div>
 
-<!-- Scripts do Zoom SDK (Versão 3.11.0) -->
+<!-- Scripts do Zoom SDK (VERSÃO 3.11.0) -->
 <script src="https://source.zoom.us/3.11.0/lib/vendor/react.min.js"></script>
 <script src="https://source.zoom.us/3.11.0/lib/vendor/react-dom.min.js"></script>
 <script src="https://source.zoom.us/3.11.0/lib/vendor/redux.min.js"></script>
@@ -31,17 +34,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.18/jsrsasign-all-min.js"></script>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // ⚙️ Inicializar o SDK com caminho correto
-    if (typeof ZoomMtg !== 'undefined') {
-      ZoomMtg.setZoomJSLib('https://source.zoom.us/3.11.0/lib', '/av');
-      ZoomMtg.preLoadWasm();
-      ZoomMtg.prepareJssdk();
-    } else {
-      console.error('❌ ZoomMtg não carregou corretamente!');
-    }
-  });
-
   // 🔐 Credenciais do Zoom
   const apiKey = 'USroBek9TFK0sdTnKGQcg';
   const apiSecret = 'xfjGAB6qOuMVQCABv8obRavSaNrd1X8d';
@@ -51,6 +43,17 @@
   // 📧 Dados do aluno (do Memberkit)
   const userName = 'Nome do Aluno';
   const userEmail = 'email@dominio.com';
+
+  // ⚙️ Inicializar o SDK com caminho correto
+  document.addEventListener('DOMContentLoaded', function () {
+    if (typeof ZoomMtg !== 'undefined') {
+      ZoomMtg.setZoomJSLib('https://source.zoom.us/3.11.0/lib', '/av');
+      ZoomMtg.preLoadWasm();
+      ZoomMtg.prepareJssdk();
+    } else {
+      console.error('❌ ZoomMtg não carregou corretamente!');
+    }
+  });
 
   // 🔑 Função para gerar a assinatura
   function generateSignature(apiKey, apiSecret, meetingNumber, role) {
