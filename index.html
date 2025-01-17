@@ -40,9 +40,9 @@
   const meetingNumber = '87370145813';
   const passWord = '0fGYcM';
 
-  // 📧 Dados do aluno (do Memberkit)
-  const userName = 'Nome do Aluno';
-  const userEmail = 'email@dominio.com';
+  // 📧 Dados de TESTE do aluno
+  const userName = 'Aluno Teste';
+  const userEmail = 'aluno.teste@goodstart.com.br';
 
   // ⚙️ Inicializar o SDK com caminho correto
   document.addEventListener('DOMContentLoaded', function () {
@@ -87,9 +87,9 @@
         ZoomMtg.join({
           signature: signature,
           meetingNumber: meetingNumber,
-          userName: userName,
+          userName: userName,    // Nome fixo de TESTE
           apiKey: apiKey,
-          userEmail: userEmail,
+          userEmail: userEmail,  // Email fixo de TESTE
           passWord: passWord,
           success: function () {
             console.log('✅ Reunião iniciada com sucesso!');
