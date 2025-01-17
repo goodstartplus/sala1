@@ -18,19 +18,30 @@
 <button id="joinMeeting">Entrar na Reunião</button>
 <div id="zmmtg-root"></div>
 
-<!-- Scripts do Zoom SDK (ORDENADOS CORRETAMENTE) -->
-<script src="https://source.zoom.us/2.14.0/lib/vendor/react.min.js" defer></script>
-<script src="https://source.zoom.us/2.14.0/lib/vendor/react-dom.min.js" defer></script>
-<script src="https://source.zoom.us/2.14.0/lib/vendor/redux.min.js" defer></script>
-<script src="https://source.zoom.us/2.14.0/lib/vendor/redux-thunk.min.js" defer></script>
+<!-- Scripts do Zoom SDK (Versão 3.11.0) -->
+<script src="https://source.zoom.us/3.11.0/lib/vendor/react.min.js"></script>
+<script src="https://source.zoom.us/3.11.0/lib/vendor/react-dom.min.js"></script>
+<script src="https://source.zoom.us/3.11.0/lib/vendor/redux.min.js"></script>
+<script src="https://source.zoom.us/3.11.0/lib/vendor/redux-thunk.min.js"></script>
 
 <!-- SDK do Zoom -->
-<script src="https://source.zoom.us/2.14.0/zoom-meeting-2.14.0.min.js" defer></script>
+<script src="https://source.zoom.us/3.11.0/zoom-meeting-3.11.0.min.js"></script>
 
 <!-- Biblioteca para gerar a assinatura -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.18/jsrsasign-all-min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.18/jsrsasign-all-min.js"></script>
 
-<script defer>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // ⚙️ Inicializar o SDK com caminho correto
+    if (typeof ZoomMtg !== 'undefined') {
+      ZoomMtg.setZoomJSLib('https://source.zoom.us/3.11.0/lib', '/av');
+      ZoomMtg.preLoadWasm();
+      ZoomMtg.prepareJssdk();
+    } else {
+      console.error('❌ ZoomMtg não carregou corretamente!');
+    }
+  });
+
   // 🔐 Credenciais do Zoom
   const apiKey = 'USroBek9TFK0sdTnKGQcg';
   const apiSecret = 'xfjGAB6qOuMVQCABv8obRavSaNrd1X8d';
@@ -40,17 +51,6 @@
   // 📧 Dados do aluno (do Memberkit)
   const userName = 'Nome do Aluno';
   const userEmail = 'email@dominio.com';
-
-  // ⚙️ Inicializar o SDK com caminho correto
-  document.addEventListener('DOMContentLoaded', function () {
-    if (typeof ZoomMtg !== 'undefined') {
-      ZoomMtg.setZoomJSLib('https://source.zoom.us/2.14.0/lib', '/av');
-      ZoomMtg.preLoadWasm();
-      ZoomMtg.prepareJssdk();
-    } else {
-      console.error('❌ ZoomMtg não carregou corretamente!');
-    }
-  });
 
   // 🔑 Função para gerar a assinatura
   function generateSignature(apiKey, apiSecret, meetingNumber, role) {
