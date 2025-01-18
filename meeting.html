@@ -40,5 +40,42 @@
     
     <script src="/js/tool.js"></script>
     <script src="/js/meeting.js"></script>
+
+    <script> 
+    window.addEventListener('DOMContentLoaded', function () {
+  const urlParams = new URLSearchParams(window.location.search);
+  const meetingNumber = urlParams.get('mn');
+  const userName = urlParams.get('name');
+  const passWord = urlParams.get('pwd');
+  const signature = urlParams.get('signature');
+  const sdkKey = urlParams.get('sdkKey');  // ✅ Now it's passed correctly
+
+  ZoomMtg.setZoomJSLib('https://source.zoom.us/3.11.0/lib', '/av');
+  ZoomMtg.preLoadWasm();
+  ZoomMtg.prepareWebSDK();
+
+  ZoomMtg.init({
+    leaveUrl: 'https://goodstart.com.br/area-do-aluno',
+    success: function () {
+      ZoomMtg.join({
+        signature: signature,
+        meetingNumber: meetingNumber,
+        userName: decodeURIComponent(userName),
+        sdkKey: sdkKey,  // ✅ Correctly set
+        passWord: passWord,
+        success: function () {
+          console.log('✅ Entrou na reunião com sucesso!');
+        },
+        error: function (err) {
+          console.error('❌ Erro ao entrar na reunião:', err);
+        }
+      });
+    },
+    error: function (err) {
+      console.error('❌ Erro ao inicializar o SDK:', err);
+    }
+  });
+});
+</script>
 </body>
 </html>
