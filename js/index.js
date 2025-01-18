@@ -17,20 +17,20 @@ function websdkready() {
   // ZoomMtg.setZoomJSLib('http://localhost:9999/node_modules/@zoomus/websdk/dist/lib', '/av'); // Local version default, Angular Project change to use cdn version
   ZoomMtg.preLoadWasm(); // pre download wasm file to save time.
 
-  var CLIENT_ID = "kN1wfuzpTVuSs20rzqpt8A";
+  var CLIENT_ID = "USroBek9TFK0sdTnKGQcg";
   /**
    * NEVER PUT YOUR ACTUAL SDK SECRET OR CLIENT SECRET IN CLIENT SIDE CODE, THIS IS JUST FOR QUICK PROTOTYPING
    * The below generateSignature should be done server side as not to expose your SDK SECRET in public
    * You can find an example in here: https://developers.zoom.us/docs/meeting-sdk/auth/#signature
    */
-  var CLIENT_SECRET = "bLL6zo4RVpECeWW3AiAH1AdcTRUYL999";
+  var CLIENT_SECRET = "xfjGAB6qOuMVQCABv8obRavSaNrd1X8d";
 
   // some help code, remember mn, pwd, lang to cookie, and autofill.
   
 document.getElementById("display_name").value =
     "";
 
-  document.getElementById("meeting_number").value = "87149115915"
+  document.getElementById("meeting_number").value = "87370145813"
   ;
   document.getElementById("meeting_pwd").value = "0fGYcM"
   ;
@@ -111,7 +111,7 @@ document.getElementById("display_name").value =
           console.log(res.result);
           meetingConfig.signature = res.result;
           meetingConfig.sdkKey = CLIENT_ID;
-          var joinUrl = "https://goodstartplus.github.io/GSA-quarta/CDN/meeting.html?" + testTool.serialize(meetingConfig);
+          var joinUrl = "/meeting.html?" + testTool.serialize(meetingConfig);
           console.log(joinUrl);
           window.open(joinUrl, "_self");
         },
@@ -145,7 +145,7 @@ document.getElementById("display_name").value =
         meetingConfig.sdkKey = CLIENT_ID;
         var joinUrl =
           testTool.getCurrentDomain() +
-          "https://goodstartplus.github.io/GSA-quarta/CDN/meeting.html?" +
+          "/meeting.html?" +
           testTool.serialize(meetingConfig);
         document.getElementById('copy_link_value').setAttribute('link', joinUrl);
         copyToClipboard('copy_link_value');
