@@ -117,7 +117,7 @@ document.getElementById('join_meeting').addEventListener('click', function (e) {
   const passWord = document.getElementById('meeting_pwd').value;
 
   // 🔐 Fetch the signature and sdkKey from the backend
-  fetch('http://localhost:4000/generateSignature', {
+  fetch('http://localhost:5000/generateSignature', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ meetingNumber: meetingNumber, role: 0 })
