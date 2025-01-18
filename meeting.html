@@ -1,35 +1,44 @@
 <!DOCTYPE html>
-
+<html lang="pt-BR">
 <head>
-    <title>Quarta do vocabulário - ao vivo</title>
     <meta charset="utf-8" />
-    <link type="text/css" rel="stylesheet" href="https://source.zoom.us/3.11.0/css/bootstrap.css" />
-    <link type="text/css" rel="stylesheet" href="https://source.zoom.us/3.11.0/css/react-select.css" />
-    <meta name="format-detection" content="telephone=no">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta http-equiv="origin-trial" content="">
-   
+    <title>Quarta do vocabulário - ao vivo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+    <!-- Zoom SDK Styles -->
+    <link rel="stylesheet" href="https://source.zoom.us/3.11.0/css/bootstrap.css" />
+    <link rel="stylesheet" href="https://source.zoom.us/3.11.0/css/react-select.css" />
+    
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+        }
+        #zmmtg-root {
+            height: 100%;
+            width: 100%;
+            z-index: 999;
+            position: relative;
+        }
+        #aria-notify-area { display: none; }
+    </style>
 </head>
 
 <body>
-    <style>
-        #__vconsole {display:none!important;}
-        .vc-switch {display:none!important;}   
-    </style>
+    <!-- ✅ REQUIRED for Zoom SDK UI -->
+    <div id="zmmtg-root"></div>
+
+    <!-- Zoom SDK Scripts -->
     <script src="https://source.zoom.us/3.11.0/lib/vendor/react.min.js"></script>
     <script src="https://source.zoom.us/3.11.0/lib/vendor/react-dom.min.js"></script>
     <script src="https://source.zoom.us/3.11.0/lib/vendor/redux.min.js"></script>
     <script src="https://source.zoom.us/3.11.0/lib/vendor/redux-thunk.min.js"></script>
     <script src="https://source.zoom.us/3.11.0/lib/vendor/lodash.min.js"></script>
     <script src="https://source.zoom.us/zoom-meeting-3.11.0.min.js"></script>
-    <script src="/js/tool.js"></script>
-    <script src="/js/vconsole.min.js"></script>
-    <script src="/js/meeting.js"></script>
-     <script src="/coi-sw.js"></script>
     
-    <script>
-
-    </script>
+    <script src="/js/tool.js"></script>
+    <script src="/js/meeting.js"></script>
 </body>
-
 </html>
