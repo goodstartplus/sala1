@@ -31,7 +31,7 @@ function websdkready() {
     // ✅ Initialize Zoom SDK
     ZoomMtg.setZoomJSLib('https://source.zoom.us/3.11.0/lib', '/av');
     ZoomMtg.preLoadWasm();
-    ZoomMtg.prepareJssdk();
+   
 
     ZoomMtg.init({
         leaveUrl: meetingConfig.leaveUrl,
