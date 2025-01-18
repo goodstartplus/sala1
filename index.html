@@ -107,10 +107,56 @@ function myFunction() {
      <script src="/coi-sw.js"></script>
 	
 
-    <script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.18/jsrsasign-all-min.js"></script>
+<script>
+  // Zoom Credentials (FOR TESTING ONLY)
+  const apiKey = 'USroBek9TFK0sdTnKGQcg';
+  const apiSecret = 'xfjGAB6qOuMVQCABv8obRavSaNrd1X8d';
 
+  // 🔑 Generate Signature (Client-side for testing ONLY)
+  function generateSignature(apiKey, apiSecret, meetingNumber, role) {
+    const iat = Math.round(new Date().getTime() / 1000) - 30;
+    const exp = iat + 60 * 60 * 2;
 
-    </script>
+    const oHeader = { alg: 'HS256', typ: 'JWT' };
+    const oPayload = {
+      sdkKey: apiKey,
+      mn: meetingNumber,
+      role: role,
+      iat: iat,
+      exp: exp,
+      appKey: apiKey,
+      tokenExp: exp
+    };
+
+    const sHeader = JSON.stringify(oHeader);
+    const sPayload = JSON.stringify(oPayload);
+    return KJUR.jws.JWS.sign('HS256', sHeader, sPayload, apiSecret);
+  }
+
+  // 🚀 Handle "Entrar na aula" Button Click
+  document.getElementById('join_meeting').addEventListener('click', function (e) {
+    e.preventDefault();
+
+    const userName = document.getElementById('display_name').value.trim();
+    const meetingNumber = document.getElementById('meeting_number').value.trim();
+    const passWord = document.getElementById('meeting_pwd').value.trim();
+    const role = document.getElementById('meeting_role').value;
+
+    if (!userName || !meetingNumber) {
+      alert('⚠️ Por favor, preencha seu nome e o código da aula.');
+      return;
+    }
+
+    // 🔐 Generate signature for the meeting
+    const signature = generateSignature(apiKey, apiSecret, meetingNumber, role);
+
+    // 🔄 Redirect to meeting.html with parameters
+    const meetingUrl = `meeting.html?mn=${meetingNumber}&name=${encodeURIComponent(userName)}&pwd=${passWord}&role=${role}&signature=${signature}&sdkKey=${apiKey}`;
+    window.location.href = meetingUrl;
+  });
+</script>
+
 </body>
 
 </html>
