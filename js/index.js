@@ -1,49 +1,77 @@
-window.addEventListener('DOMContentLoaded', function () {
-  console.log('DOM fully loaded and parsed');
+window.addEventListener("DOMContentLoaded", function (event) {
+  console.log("DOM fully loaded and parsed");
   websdkready();
 });
 
 function websdkready() {
   var testTool = window.testTool;
-
-  // ✅ Load VConsole for mobile debugging (if used)
   if (testTool.isMobileDevice()) {
-    var script = document.createElement('script');
-    script.src = 'https://unpkg.com/vconsole/dist/vconsole.min.js';
-    script.onload = function () { vConsole = new VConsole(); };
-    document.head.appendChild(script);
+    vConsole = new VConsole();
   }
-
-  console.log("Checking system requirements...");
+  console.log("checkSystemRequirements");
   console.log(JSON.stringify(ZoomMtg.checkSystemRequirements()));
 
-  // ✅ Load Zoom SDK properly
-  ZoomMtg.setZoomJSLib('https://source.zoom.us/3.11.0/lib', '/av');
-  ZoomMtg.preLoadWasm();
-  
+  // it's option if you want to change the MeetingSDK-Web dependency link resources. setZoomJSLib must be run at first
+  // ZoomMtg.setZoomJSLib("https://source.zoom.us/{VERSION}/lib", "/av"); // default, don't need call it
+  // ZoomMtg.setZoomJSLib("https://jssdk.zoomus.cn/{VERSION}/lib", "/av"); // china cdn option
+  ZoomMtg.preLoadWasm(); // pre download wasm file to save time.
 
-  const CLIENT_ID = "USroBek9TFK0sdTnKGQcg";
-  const CLIENT_SECRET = "xfjGAB6qOuMVQCABv8obRavSaNrd1X8d";
+  var CLIENT_ID = "F0SgnH0CT92BJXdYxaV8gw";
+  /**
+   * NEVER PUT YOUR ACTUAL SDK SECRET OR CLIENT SECRET IN CLIENT SIDE CODE, THIS IS JUST FOR QUICK PROTOTYPING
+   * The below generateSignature should be done server side as not to expose your SDK SECRET in public
+   * You can find an example in here: https://developers.zoom.us/docs/meeting-sdk/auth/#signature
+   */
+  var CLIENT_SECRET = "qt9mFvUgWvGFmxbqtmexdFU1Zn2eGHri";
 
-  document.getElementById("display_name").value = "";
-  document.getElementById("meeting_number").value = "87370145813";
-  document.getElementById("meeting_pwd").value = "0fGYcM";
+  // some help code, remember mn, pwd, lang to cookie, and autofill.
+  document.getElementById("display_name").value =
+    "CDN" +
+    ZoomMtg.getWebSDKVersion()[0] +
+    testTool.detectOS() +
+    "#" +
+    testTool.getBrowserInfo();
+  document.getElementById("meeting_number").value =
+    testTool.getCookie("meeting_number");
+  document.getElementById("meeting_pwd").value =
+    testTool.getCookie("meeting_pwd");
+  if (testTool.getCookie("meeting_lang"))
+    document.getElementById("meeting_lang").value =
+      testTool.getCookie("meeting_lang");
 
-  // 🔄 Language preference
-  const lang = testTool.getCookie("meeting_lang");
-  if (lang) {
-    document.getElementById("meeting_lang").value = lang;
-  }
+  document
+    .getElementById("meeting_lang")
+    .addEventListener("change", function (e) {
+      testTool.setCookie(
+        "meeting_lang",
+        document.getElementById("meeting_lang").value
+      );
+      testTool.setCookie(
+        "_zm_lang",
+        document.getElementById("meeting_lang").value
+      );
+    });
+  // copy zoom invite link to mn, autofill mn and pwd.
+  document
+    .getElementById("meeting_number")
+    .addEventListener("input", function (e) {
+      var tmpMn = e.target.value.replace(/([^0-9])+/i, "");
+      if (tmpMn.match(/([0-9]{9,11})/)) {
+        tmpMn = tmpMn.match(/([0-9]{9,11})/)[1];
+      }
+      var tmpPwd = e.target.value.match(/pwd=([\d,\w]+)/);
+      if (tmpPwd) {
+        document.getElementById("meeting_pwd").value = tmpPwd[1];
+        testTool.setCookie("meeting_pwd", tmpPwd[1]);
+      }
+      document.getElementById("meeting_number").value = tmpMn;
+      testTool.setCookie(
+        "meeting_number",
+        document.getElementById("meeting_number").value
+      );
+    });
 
-  document.getElementById("meeting_lang").addEventListener("change", function () {
-    const selectedLang = document.getElementById("meeting_lang").value;
-    testTool.setCookie("meeting_lang", selectedLang);
-    testTool.setCookie("_zm_lang", selectedLang);
-  });
-
-  // 🧹 Clear form and cookies
   document.getElementById("clear_all").addEventListener("click", function (e) {
-    e.preventDefault();
     testTool.deleteAllCookies();
     document.getElementById("display_name").value = "";
     document.getElementById("meeting_number").value = "";
@@ -53,85 +81,73 @@ function websdkready() {
     window.location.href = "/index.html";
   });
 
-  // 🚀 Join meeting button
-  document.getElementById("join_meeting").addEventListener("click", function (e) {
-    e.preventDefault();
-    const meetingConfig = testTool.getMeetingConfig();
-
-    if (!meetingConfig.mn || !meetingConfig.name) {
-      alert("⚠️ Por favor, escreva o seu nome.");
-      return false;
-    }
-
-    testTool.setCookie("meeting_number", meetingConfig.mn);
-    testTool.setCookie("meeting_pwd", meetingConfig.pwd);
-
-    // ✅ Generate signature (for TESTING ONLY)
-    const signature = generateSignature(CLIENT_ID, CLIENT_SECRET, meetingConfig.mn, meetingConfig.role);
-
-    // ✅ Initialize and join meeting
-    ZoomMtg.init({
-      leaveUrl: "/index.html",
-      success: function () {
-        ZoomMtg.join({
-          signature: signature,
-          meetingNumber: meetingConfig.mn,
-          userName: meetingConfig.name,
-          apiKey: CLIENT_ID,
-          passWord: meetingConfig.pwd,
-          success: function () {
-            console.log("✅ Reunião iniciada com sucesso!");
-          },
-          error: function (err) {
-            console.error("❌ Erro ao entrar na reunião:", err);
-          }
-        });
-      },
-      error: function (err) {
-        console.error("❌ Erro ao inicializar o SDK:", err);
+  // click join meeting button
+  document
+    .getElementById("join_meeting")
+    .addEventListener("click", function (e) {
+      e.preventDefault();
+      var meetingConfig = testTool.getMeetingConfig();
+      if (!meetingConfig.mn || !meetingConfig.name) {
+        alert("Meeting number or username is empty");
+        return false;
       }
-    });
-  });
 
-  // 📎 Copy meeting link
-  window.copyJoinLink = function () {
-    const meetingConfig = testTool.getMeetingConfig();
+      testTool.setCookie("meeting_number", meetingConfig.mn);
+      testTool.setCookie("meeting_pwd", meetingConfig.pwd);
+
+      var signature = ZoomMtg.generateSDKSignature({
+        meetingNumber: meetingConfig.mn,
+        sdkKey: CLIENT_ID,
+        sdkSecret: CLIENT_SECRET,
+        role: meetingConfig.role,
+        success: function (res) {
+          console.log(res);
+          meetingConfig.signature = res;
+          meetingConfig.sdkKey = CLIENT_ID;
+          var joinUrl = "/meeting.html?" + testTool.serialize(meetingConfig);
+          console.log(joinUrl);
+          window.open(joinUrl, "_blank");
+        },
+      });
+    });
+
+  function copyToClipboard(elementId) {
+    var aux = document.createElement("input");
+    aux.setAttribute(
+      "value",
+      document.getElementById(elementId).getAttribute("link")
+    );
+    document.body.appendChild(aux);
+    aux.select();
+    document.execCommand("copy");
+    document.body.removeChild(aux);
+  }
+
+  // click copy jon link button
+  window.copyJoinLink = function (element) {
+    var meetingConfig = testTool.getMeetingConfig();
     if (!meetingConfig.mn || !meetingConfig.name) {
-      alert("⚠️ O número da reunião ou o nome do usuário está vazio.");
+      alert("Meeting number or username is empty");
       return false;
     }
-
-    const signature = generateSignature(CLIENT_ID, CLIENT_SECRET, meetingConfig.mn, meetingConfig.role);
-    const joinUrl = `${testTool.getCurrentDomain()}/meeting.html?${testTool.serialize(meetingConfig)}&signature=${signature}`;
-    
-    const tempInput = document.createElement("input");
-    tempInput.value = joinUrl;
-    document.body.appendChild(tempInput);
-    tempInput.select();
-    document.execCommand("copy");
-    document.body.removeChild(tempInput);
-
-    alert("📋 Link da reunião copiado!");
+    var signature = ZoomMtg.generateSDKSignature({
+      meetingNumber: meetingConfig.mn,
+      sdkKey: CLIENT_ID,
+      sdkSecret: CLIENT_SECRET,
+      role: meetingConfig.role,
+      success: function (res) {
+        console.log(res.result);
+        meetingConfig.signature = res.result;
+        meetingConfig.sdkKey = CLIENT_ID;
+        var joinUrl =
+          testTool.getCurrentDomain() +
+          "/meeting.html?" +
+          testTool.serialize(meetingConfig);
+        document
+          .getElementById("copy_link_value")
+          .setAttribute("link", joinUrl);
+        copyToClipboard("copy_link_value");
+      },
+    });
   };
-
-  // 🔑 Generate signature (FOR TESTING ONLY)
-  function generateSignature(apiKey, apiSecret, meetingNumber, role) {
-    const iat = Math.round(new Date().getTime() / 1000) - 30;
-    const exp = iat + 60 * 60 * 2;
-
-    const oHeader = { alg: 'HS256', typ: 'JWT' };
-    const oPayload = {
-      sdkKey: apiKey,
-      mn: meetingNumber,
-      role: role,
-      iat: iat,
-      exp: exp,
-      appKey: apiKey,
-      tokenExp: exp
-    };
-
-    const sHeader = JSON.stringify(oHeader);
-    const sPayload = JSON.stringify(oPayload);
-    return KJUR.jws.JWS.sign('HS256', sHeader, sPayload, apiSecret);
-  }
 }
