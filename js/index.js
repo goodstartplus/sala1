@@ -20,7 +20,7 @@ function websdkready() {
   // ✅ Load Zoom SDK properly
   ZoomMtg.setZoomJSLib('https://source.zoom.us/3.11.0/lib', '/av');
   ZoomMtg.preLoadWasm();
-  ZoomMtg.prepareJssdk();
+  
 
   const CLIENT_ID = "USroBek9TFK0sdTnKGQcg";
   const CLIENT_SECRET = "xfjGAB6qOuMVQCABv8obRavSaNrd1X8d";
