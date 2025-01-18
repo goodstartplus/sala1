@@ -116,24 +116,26 @@ document.getElementById('join_meeting').addEventListener('click', function (e) {
   const userName = document.getElementById('display_name').value;
   const passWord = document.getElementById('meeting_pwd').value;
 
-  // 🔐 Fetch the signature from the backend
+  // 🔐 Fetch the signature and sdkKey from the backend
   fetch('http://localhost:4000/generateSignature', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ meetingNumber: meetingNumber, role: 0 }) // 0 = Attendee
+    body: JSON.stringify({ meetingNumber: meetingNumber, role: 0 })
   })
   .then(response => response.json())
   .then(data => {
     const signature = data.signature;
+    const sdkKey = data.sdkKey;  // ✅ Received from backend
 
-    // 🔄 Redirect to meeting.html with signature
-    window.location.href = `meeting.html?mn=${meetingNumber}&name=${encodeURIComponent(userName)}&pwd=${passWord}&signature=${signature}`;
+    // 🔄 Redirect to meeting.html with the signature and sdkKey
+    window.location.href = `meeting.html?mn=${meetingNumber}&name=${encodeURIComponent(userName)}&pwd=${passWord}&signature=${signature}&sdkKey=${sdkKey}`;
   })
   .catch(error => {
     console.error('❌ Error fetching signature:', error);
     alert('Erro ao gerar a assinatura. Verifique a conexão com o servidor.');
   });
 });
+
 </script>
 
 
