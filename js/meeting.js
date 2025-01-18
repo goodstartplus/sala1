@@ -1,115 +1,62 @@
 window.addEventListener('DOMContentLoaded', function () {
-  console.log('DOM fully loaded and parsed');
-  websdkready();
+    console.log('DOM fully loaded and parsed');
+    websdkready();
 });
 
 function websdkready() {
-  const testTool = window.testTool;
+    const testTool = window.testTool;
 
-  // ✅ Get meeting parameters from URL
-  const tmpArgs = testTool.parseQuery();
+    // ✅ Get meeting parameters from URL
+    const tmpArgs = testTool.parseQuery();
 
-  // 🚨 Validate essential parameters
-  if (!tmpArgs.mn || !tmpArgs.signature || !tmpArgs.sdkKey) {
-    alert("⚠️ Informação da reunião incompleta. Verifique o link.");
-    return;
-  }
+    // 🚨 Validate required parameters
+    if (!tmpArgs.mn || !tmpArgs.signature || !tmpArgs.name) {
+        alert("⚠️ Informação da reunião incompleta. Verifique o link.");
+        return;
+    }
 
-  // 🔑 Meeting Configuration
-  const meetingConfig = {
-    sdkKey: tmpArgs.sdkKey,
-    meetingNumber: tmpArgs.mn,
-    userName: tmpArgs.name ? testTool.b64DecodeUnicode(tmpArgs.name) : "Usuário Anônimo",
-    passWord: tmpArgs.pwd,
-    leaveUrl: "https://goodstart.com.br/area-do-aluno",
-    role: parseInt(tmpArgs.role, 10),
-    userEmail: tmpArgs.email ? testTool.b64DecodeUnicode(tmpArgs.email) : "",
-    lang: tmpArgs.lang || "pt-PT",
-    signature: tmpArgs.signature,
-    china: tmpArgs.china === "1",
-  };
+    const meetingConfig = {
+        sdkKey: tmpArgs.sdkKey,
+        meetingNumber: tmpArgs.mn,
+        userName: decodeURIComponent(tmpArgs.name),  // ✅ Fixed Decoding
+        passWord: tmpArgs.pwd,
+        leaveUrl: "https://goodstart.com.br/area-do-aluno",
+        role: parseInt(tmpArgs.role, 10),
+        signature: tmpArgs.signature,
+        lang: tmpArgs.lang || "pt-PT",
+    };
 
-  // ✅ Debug for mobile devices
-  if (testTool.isMobileDevice()) {
-    const script = document.createElement('script');
-    script.src = 'https://unpkg.com/vconsole/dist/vconsole.min.js';
-    script.onload = () => { vConsole = new VConsole(); };
-    document.head.appendChild(script);
-  }
+    console.log("🔍 Meeting Config:", meetingConfig);
 
-  console.log("🔍 System Requirements:", JSON.stringify(ZoomMtg.checkSystemRequirements()));
+    // ✅ Initialize Zoom SDK
+    ZoomMtg.setZoomJSLib('https://source.zoom.us/3.11.0/lib', '/av');
+    ZoomMtg.preLoadWasm();
+    ZoomMtg.prepareJssdk();
 
-  // ✅ Load Zoom SDK
-  if (meetingConfig.china) {
-    ZoomMtg.setZoomJSLib("https://jssdk.zoomus.cn/3.11.0/lib", "/av");
-  } else {
-    ZoomMtg.setZoomJSLib("https://source.zoom.us/3.11.0/lib", "/av");
-  }
-  
-  ZoomMtg.preLoadWasm();
-  ZoomMtg.prepareJssdk();
-
-  // 🚀 Join the meeting
-  function beginJoin(signature) {
     ZoomMtg.init({
-      leaveUrl: meetingConfig.leaveUrl,
-      disableCORP: !window.crossOriginIsolated,
-      externalLinkPage: './externalLinkPage.html',
-      success: function () {
-        console.log("✅ SDK Initialized");
-        ZoomMtg.i18n.load(meetingConfig.lang);
-        ZoomMtg.i18n.reload(meetingConfig.lang);
+        leaveUrl: meetingConfig.leaveUrl,
+        isSupportAV: true,
+        success: function () {
+            console.log("✅ SDK Initialized");
 
-        ZoomMtg.join({
-          signature: signature,
-          meetingNumber: meetingConfig.meetingNumber,
-          userName: meetingConfig.userName,
-          sdkKey: meetingConfig.sdkKey,
-          userEmail: meetingConfig.userEmail,
-          passWord: meetingConfig.passWord,
-          success: function (res) {
-            console.log("🎉 Reunião iniciada com sucesso!");
-            ZoomMtg.getAttendeeslist({});
-            ZoomMtg.getCurrentUser({
-              success: function (res) {
-                console.log("🙋‍♂️ Participante atual:", res.result.currentUser);
-              }
+            // ✅ Join the Zoom Meeting
+            ZoomMtg.join({
+                signature: meetingConfig.signature,
+                meetingNumber: meetingConfig.meetingNumber,
+                userName: meetingConfig.userName,
+                apiKey: meetingConfig.sdkKey,
+                passWord: meetingConfig.passWord,
+                success: function () {
+                    console.log("🎉 Reunião iniciada com sucesso!");
+                },
+                error: function (err) {
+                    console.error("❌ Erro ao entrar na reunião:", err);
+                    alert("Erro ao entrar na reunião. Verifique o link ou a conexão.");
+                }
             });
-          },
-          error: function (err) {
-            console.error("❌ Erro ao entrar na reunião:", err);
-            alert("Erro ao entrar na reunião. Verifique a assinatura ou o número da reunião.");
-          }
-        });
-      },
-      error: function (err) {
-        console.error("❌ Falha ao inicializar o SDK:", err);
-      }
+        },
+        error: function (err) {
+            console.error("❌ Falha ao inicializar o SDK:", err);
+        }
     });
-
-    // 🔔 Event Listeners for Meeting Status
-    ZoomMtg.inMeetingServiceListener('onUserJoin', function (data) {
-      console.log('👤 Novo participante:', data);
-    });
-
-    ZoomMtg.inMeetingServiceListener('onUserLeave', function (data) {
-      console.log('🚪 Alguém saiu:', data);
-    });
-
-    ZoomMtg.inMeetingServiceListener('onUserIsInWaitingRoom', function (data) {
-      console.log('🕒 Usuário na sala de espera:', data);
-    });
-
-    ZoomMtg.inMeetingServiceListener('onMeetingStatus', function (data) {
-      console.log('📊 Status da reunião:', data);
-    });
-  }
-
-  // ✅ Validate and Join
-  if (meetingConfig.signature) {
-    beginJoin(meetingConfig.signature);
-  } else {
-    console.error("❌ Assinatura inválida.");
-    alert("Assinatura inválida. Não foi possível entrar na reunião.");
-  }
 }
