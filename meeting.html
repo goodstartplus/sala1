@@ -1,81 +1,28 @@
+
 <!DOCTYPE html>
-<html lang="pt-BR">
+
 <head>
+    <title>Zoom WebSDK CDN</title>
     <meta charset="utf-8" />
-    <title>Quarta do vocabulário - ao vivo</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    
-    <!-- Zoom SDK Styles -->
-    <link rel="stylesheet" href="https://source.zoom.us/3.11.0/css/bootstrap.css" />
-    <link rel="stylesheet" href="https://source.zoom.us/3.11.0/css/react-select.css" />
-    
-    <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            background-color: #000;
-        }
-        #zmmtg-root {
-            height: 100%;
-            width: 100%;
-            z-index: 999;
-            position: relative;
-        }
-        #aria-notify-area { display: none; }
-    </style>
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="origin-trial" content="">
 </head>
 
 <body>
-    <!-- ✅ REQUIRED for Zoom SDK UI -->
-    <div id="zmmtg-root"></div>
+    <script src="https://source.zoom.us/3.11.2/lib/vendor/react.min.js"></script>
+    <script src="https://source.zoom.us/3.11.2/lib/vendor/react-dom.min.js"></script>
+    <script src="https://source.zoom.us/3.11.2/lib/vendor/redux.min.js"></script>
+    <script src="https://source.zoom.us/3.11.2/lib/vendor/redux-thunk.min.js"></script>
+    <script src="https://source.zoom.us/3.11.2/lib/vendor/lodash.min.js"></script>
+    <script src="https://source.zoom.us/3.11.2/zoom-meeting-3.11.2.min.js"></script>
+    <script src="js/tool.js"></script>
+    <script src="js/vconsole.min.js"></script>
+    <script src="js/meeting.js"></script>
 
-    <!-- Zoom SDK Scripts -->
-    <script src="https://source.zoom.us/3.11.0/lib/vendor/react.min.js"></script>
-    <script src="https://source.zoom.us/3.11.0/lib/vendor/react-dom.min.js"></script>
-    <script src="https://source.zoom.us/3.11.0/lib/vendor/redux.min.js"></script>
-    <script src="https://source.zoom.us/3.11.0/lib/vendor/redux-thunk.min.js"></script>
-    <script src="https://source.zoom.us/3.11.0/lib/vendor/lodash.min.js"></script>
-    <script src="https://source.zoom.us/zoom-meeting-3.11.0.min.js"></script>
-    
-    <script src="/js/tool.js"></script>
-    <script src="/js/meeting.js"></script>
+    <script>
 
-    <script> 
-    window.addEventListener('DOMContentLoaded', function () {
-  const urlParams = new URLSearchParams(window.location.search);
-  const meetingNumber = urlParams.get('mn');
-  const userName = urlParams.get('name');
-  const passWord = urlParams.get('pwd');
-  const signature = urlParams.get('signature');
-  const sdkKey = urlParams.get('sdkKey');  // ✅ Now it's passed correctly
-
-  ZoomMtg.setZoomJSLib('https://source.zoom.us/3.11.0/lib', '/av');
-  ZoomMtg.preLoadWasm();
-  ZoomMtg.prepareWebSDK();
-
-  ZoomMtg.init({
-    leaveUrl: 'https://goodstart.com.br/area-do-aluno',
-    success: function () {
-      ZoomMtg.join({
-        signature: signature,
-        meetingNumber: meetingNumber,
-        userName: decodeURIComponent(userName),
-        sdkKey: sdkKey,  // ✅ Correctly set
-        passWord: passWord,
-        success: function () {
-          console.log('✅ Entrou na reunião com sucesso!');
-        },
-        error: function (err) {
-          console.error('❌ Erro ao entrar na reunião:', err);
-        }
-      });
-    },
-    error: function (err) {
-      console.error('❌ Erro ao inicializar o SDK:', err);
-    }
-  });
-});
-</script>
+    </script>
 </body>
+
 </html>
