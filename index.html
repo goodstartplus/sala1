@@ -1,146 +1,434 @@
+
 <!DOCTYPE html>
 
 <head>
-
-
-	
-    <title>Quarta do vocabulário - ao vivo</title>
+    <title>Zoom WebSDK CDN</title>
     <meta charset="utf-8" />
-    <link type="text/css" rel="stylesheet" href="https://source.zoom.us/3.11.0/css/bootstrap.css" />
-    
     <meta name="format-detection" content="telephone=no">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<!-- <script src="/coi-sw.js"></script> -->
-
-     
+    <link type="text/css" rel="stylesheet" href="https://source.zoom.us/3.11.2/css/bootstrap.css" />
 </head>
 
-<body>
-  
+<body class="bg-dark">
 
-    <nav id="nav-tool" class="navbar navbar-inverse navbar-fixed-top">
-        <div id="aaaa" class="container">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="https://goodstart.com.br/area-do-aluno">Aula Online (ao vivo)</a>
-                
-                <a class="navbar-brand3" href="https://goodstart.com.br/area-do-aluno">Quarta do Vocabulário</a>
-            </div>
-            <div id="navbar" class="websdktest">
-                <form class="navbar-form navbar-right" id="meeting_form">
+    <style>
+        .navbar {
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            min-height: auto;
+            transition: all 0.3s ease;
+        }
+
+        .form-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            width: 100%;
+            padding: 16px 0;
+            position: relative;
+        }
+
+        .form-control,
+        .sdk-select {
+            height: 44px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 0 16px;
+            font-size: 15px;
+            min-width: 150px;
+        }
+
+        @media (max-width: 768px) {
+
+            .form-control,
+            .sdk-select {
+                width: 100%;
+                min-width: unset;
+            }
+
+            .form-group {
+                width: 100%;
+                margin-right: 0;
+            }
+
+            .button-group {
+                width: 100%;
+                display: flex;
+                gap: 8px;
+                justify-content: flex-end;
+            }
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+            border-color: #007AFF;
+        }
+
+        .btn-primary {
+            background-color: #007AFF;
+            border: none;
+            border-radius: 8px;
+            height: 44px;
+            padding: 0 20px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #0063CC;
+            transform: translateY(-1px);
+        }
+
+        #nav-tool {
+            position: relative;
+            z-index: 1000;
+        }
+
+        #display_name {
+            min-width: 200px;
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 20px;
+            color: #000;
+            padding: 8px 16px;
+            background: rgba(0, 122, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .navbar-brand:hover {
+            background: rgba(0, 122, 255, 0.2);
+            color: #007AFF;
+        }
+
+        .form-group {
+            margin: 0;
+            flex-grow: 0;
+        }
+
+        .sdk-select {
+            min-width: 120px;
+            position: relative;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            grid-column: 1 / -1;
+            z-index: 10;
+        }
+
+        .btn {
+            white-space: nowrap;
+        }
+
+        .copy-status {
+            position: relative;
+        }
+
+        .copy-status::after {
+            content: 'Copied!';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            margin-bottom: 8px;
+        }
+
+        .copy-status.show-status::after {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0.5rem 0;
+            }
+
+            .navbar-brand {
+                margin-bottom: 8px;
+                width: 100%;
+                text-align: center;
+            }
+
+            .form-container {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .button-group {
+                margin-top: 8px;
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .sdk-select {
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .button-group {
+                justify-content: flex-end;
+                flex-wrap: nowrap;
+            }
+
+            .form-container {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                align-items: start;
+            }
+        }
+
+        #meeting_lang {
+            z-index: 1;
+        }
+
+        body.bg-dark {
+            background-color: #1a1a1a;
+            color: #fff;
+        }
+
+        body.bg-dark .navbar {
+            background-color: rgba(33, 33, 33, 0.95);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body.bg-dark .navbar-brand {
+            color: #fff;
+            background: rgba(0, 122, 255, 0.2);
+        }
+
+        body.bg-dark .form-control,
+        body.bg-dark .sdk-select {
+            background-color: rgba(45, 45, 45, 0.8);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        body.bg-dark .form-control:focus {
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.2);
+            border-color: #007AFF;
+        }
+
+        body.bg-dark .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        body.bg-dark select option {
+            background-color: #2d2d2d;
+            color: #fff;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-toggle::after {
+            content: "🌓";
+        }
+
+        body.force-light .theme-toggle::after {
+            content: "🌞";
+        }
+
+        body.force-dark .theme-toggle::after {
+            content: "🌙";
+        }
+    </style>
+
+    <nav id="nav-tool" class="navbar navbar-light fixed-top">
+        <button class="theme-toggle" onclick="toggleTheme()"></button>
+        <div class="container">
+            <a class="navbar-brand" href="https://marketplacefront.zoom.us/sdk/meeting/web/index.html" target="_blank">Zoom MeetingSDK-Web</a>
+            <div id="navbar" class="flex-grow-1">
+                <form class="form-container" id="meeting_form">
                     <div class="form-group">
-                        <input type="text" name="display_name" id="display_name" value="Novo aluno" maxLength="100"
-                            
-       data-o-member="FirstName" placeholder="Escreva seu nome..." class="form-control" required>
+                        <input type="text" name="display_name" id="display_name" value="3.11.2#CDN" maxLength="100"
+                            placeholder="Name" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" name="meeting_number" id="meeting_number" value="87370145813" maxLength="200"
-                            style="width:150px" placeholder="Código da aula" class="form-control" required>
+                        <input type="text" name="meeting_number" id="meeting_number" value maxLength="200"
+                            placeholder="Meeting Number" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" name="meeting_pwd" id="meeting_pwd" value maxLength="32"
+                            placeholder="Meeting Password" class="form-control">
                     </div>
                     <div class="form-group">
-                        <input type="text" name="meeting_pwd" id="meeting_pwd" value="0fGYcM" style="width:150px"
-                            maxLength="32" placeholder="Senha da aula" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" name="meeting_email" id="meeting_email" value="" style="width:150px"
-                            maxLength="32" placeholder="Email option" class="form-control">
+                        <input type="text" name="meeting_email" id="meeting_email" value maxLength="32"
+                            placeholder="Email option" class="form-control">
                     </div>
 
                     <div class="form-group">
                         <select id="meeting_role" class="sdk-select">
                             <option value=0>Attendee</option>
-                            
+                            <option value=1>Host</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <select id="meeting_china" class="sdk-select">
                             <option value=0>Global</option>
-                            
+                            <option value=1>China</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <select id="meeting_lang" class="sdk-select">
-                          <option value="pt-PT">Portuguese Portuguese</option>  
-                          <option value="en-US">English</option>                     
-                            
-                            
+                            <option value="en-US">English</option>
+                            <option value="de-DE">German Deutsch</option>
+                            <option value="es-ES">Spanish Español</option>
+                            <option value="fr-FR">French Français</option>
+                            <option value="jp-JP">Japanese 日本語</option>
+                            <option value="pt-PT">Portuguese Portuguese</option>
+                            <option value="ru-RU">Russian Русский</option>
+                            <option value="zh-CN">Chinese 简体中文</option>
+                            <option value="zh-TW">Chinese 繁体中文</option>
+                            <option value="ko-KO">Korean 한국어</option>
+                            <option value="vi-VN">Vietnamese Tiếng Việt</option>
+                            <option value="it-IT">Italian italiano</option>
+                            <option value="tr-TR">Turkey-Türkçe</option>
+                            <option value="pl-PL">Poland-Polski</option>
+                            <option value="id-ID">Indonesian Bahasa Indonesia</option>
+                            <option value="nl-NL">Dutch Nederlands</option>
+                            <option value="sv-SE">Swedish Svenska</option>
                         </select>
                     </div>
-
-                    <input type="hidden" value="" id="copy_link_value" />
-                  
-                    <button type="submit" class="btn btn-primary" id="join_meeting">Entrar na aula</button>
-                     
-                    <button type="submit" class="btn btn-primary" id="clear_all">Clear</button>
-                    <button type="button" link="" onclick="window.copyJoinLink('#copy_join_link')"
-                        class="btn btn-primary" id="copy_join_link">Copy Direct join link</button>
-                  
-                     <div class="popup" onclick="myFunction()">Entrando pelo celular?
-  <span class="popuptext" id="myPopup">Você precisa habilitar a câmera e microfone do seu dispositivo. <a href="https://tally.so/r/n0BkB0">Clique aqui.</a></span>
-</div>
-
+                    <div class="button-group">
+                        <input type="hidden" value id="copy_link_value" />
+                        <button type="submit" class="btn btn-primary" id="join_meeting">Join</button>
+                        <button type="submit" class="btn btn-primary" id="clear_all">Clear</button>
+                        <button type="button" onclick="handleCopyClick('#copy_join_link')"
+                            class="btn btn-primary copy-status" id="copy_join_link">
+                            Copy Direct join link
+                        </button>
+                    </div>
                 </form>
-             
             </div>
-            <div class="gs"><a class="gsa">Goodstart +</a></div>
-          <!--/.navbar-collapse -->
         </div>
     </nav>
 
-	<script>
-// When the user clicks on div, open the popup
-function myFunction() {
-  var popup = document.getElementById("myPopup");
-  popup.classList.toggle("show");
-}
-</script>
 
+    <script src="https://source.zoom.us/3.11.2/lib/vendor/react.min.js"></script>
+    <script src="https://source.zoom.us/3.11.2/lib/vendor/react-dom.min.js"></script>
+    <script src="https://source.zoom.us/3.11.2/lib/vendor/redux.min.js"></script>
+    <script src="https://source.zoom.us/3.11.2/lib/vendor/redux-thunk.min.js"></script>
+    <script src="https://source.zoom.us/3.11.2/lib/vendor/lodash.min.js"></script>
+    <script src="https://source.zoom.us/3.11.2/zoom-meeting-3.11.2.min.js"></script>
+    <script src="js/tool.js"></script>
+    <script src="js/vconsole.min.js"></script>
+    <script src="js/index.js"></script>
 
-	
-    <script src="https://source.zoom.us/3.11.0/lib/vendor/react.min.js"></script>
-    <script src="https://source.zoom.us/3.11.0/lib/vendor/react-dom.min.js"></script>
-    <script src="https://source.zoom.us/3.11.0/lib/vendor/redux.min.js"></script>
-    <script src="https://source.zoom.us/3.11.0/lib/vendor/redux-thunk.min.js"></script>
-    <script src="https://source.zoom.us/3.11.0/lib/vendor/lodash.min.js"></script>
-    <script src="https://source.zoom.us/zoom-meeting-3.11.0.min.js"></script>
-    <script src="/js/tool.js"></script>
-    <script src="/js/vconsole.min.js"></script>
-    <script src="/js/meeting.js"></script>
-     <!-- <script src="/coi-sw.js"></script> -->
+    <script>
+        function handleCopyClick(selector) {
+            window.copyJoinLink(selector);
+            const button = document.querySelector(selector);
+            button.classList.add('show-status');
 
-	
+            // Remove the status after 2 seconds
+            setTimeout(() => {
+                button.classList.remove('show-status');
+            }, 2000);
+        }
 
- <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.18/jsrsasign-all-min.js"></script>
-<script>
-document.getElementById('join_meeting').addEventListener('click', function (e) {
-  e.preventDefault();
+        function toggleTheme() {
+            // Remove auto theme
+            if (document.body.classList.contains('auto-theme')) {
+                document.body.classList.remove('auto-theme');
+                document.body.classList.add('force-light');
+            }
+            // Toggle between light and dark
+            else if (document.body.classList.contains('force-light')) {
+                document.body.classList.remove('force-light');
+                document.body.classList.add('force-dark');
+            }
+            // Go back to auto
+            else {
+                document.body.classList.remove('force-dark');
+                document.body.classList.add('auto-theme');
+            }
 
-  const meetingNumber = document.getElementById('meeting_number').value;
-  const userName = document.getElementById('display_name').value;
-  const passWord = document.getElementById('meeting_pwd').value;
+            // Save the current theme preference
+            localStorage.setItem('theme-preference',
+                document.body.classList.contains('force-dark') ? 'dark' :
+                    document.body.classList.contains('force-light') ? 'light' : 'auto'
+            );
 
-  // 🔐 Fetch the signature and sdkKey from the backend
-  fetch('http://localhost:5000/generateSignature', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ meetingNumber: meetingNumber, role: 0 })
-  })
-  .then(response => response.json())
-  .then(data => {
-    const signature = data.signature;
-    const sdkKey = data.sdkKey;  // ✅ Received from backend
+            updateTheme();
+        }
 
-    // 🔄 Redirect to meeting.html with the signature and sdkKey
-    window.location.href = `meeting.html?mn=${meetingNumber}&name=${encodeURIComponent(userName)}&pwd=${passWord}&signature=${signature}&sdkKey=${sdkKey}`;
-  })
-  .catch(error => {
-    console.error('❌ Error fetching signature:', error);
-    alert('Erro ao gerar a assinatura. Verifique a conexão com o servidor.');
-  });
-});
+        function updateTheme() {
+            // Remove bg-dark class first
+            document.body.classList.remove('bg-dark');
 
-</script>
+            // Check if system is in dark mode
+            const systemDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
+            // Apply dark mode if:
+            // 1. Force dark is set, or
+            // 2. Auto theme is set and system is in dark mode
+            if (document.body.classList.contains('force-dark') ||
+                (document.body.classList.contains('auto-theme') && systemDarkMode)) {
+                document.body.classList.add('bg-dark');
+            }
+        }
 
+        // Initialize theme based on saved preference or default to auto
+        function initializeTheme() {
+            const savedPreference = localStorage.getItem('theme-preference') || 'auto';
+
+            if (savedPreference === 'dark') {
+                document.body.classList.add('force-dark');
+            } else if (savedPreference === 'light') {
+                document.body.classList.add('force-light');
+            } else {
+                document.body.classList.add('auto-theme');
+            }
+
+            updateTheme();
+        }
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)')
+            .addEventListener('change', () => {
+                if (document.body.classList.contains('auto-theme')) {
+                    updateTheme();
+                }
+            });
+
+        // Initialize theme on page load
+        initializeTheme();
+    </script>
 </body>
 
 </html>
